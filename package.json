@@ -3,6 +3,10 @@
     "version": "0.0.1",
     "dependencies": {
         "express": "*",
-        "mongodb": "*"
+        "mongodb": "*",
+        "morgan": "*",
+        "debug": "*",
+        "body-parser": "*",
+        "ejs": "*"
     }
 }
