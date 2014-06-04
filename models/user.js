@@ -3,13 +3,12 @@
  */
 var mongodb = require('./db');
 
-function User(pUsername, pPassword, pEmail, pName) {
+function User(pUsername, pPassword, pEmail) {
     this.username = pUsername;
     this.password = pPassword;
     this.email = pEmail;
-    this.name = pName;
     this.likeList = new Array();
-    this.avatarId = null;
+    this.avatar = undefined;
     this.balance = 0.0;
 }
 
@@ -22,9 +21,8 @@ User.prototype.save = function(callback) {
         username: this.username,
         password: this.password,
         email: this.email,
-        name: this.name,
         likeList: this.likeList,
-        avatarId: this.avatarId,
+        avatar: this.avatar,
         balance: this.balance
     }
 

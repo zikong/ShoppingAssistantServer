@@ -13,11 +13,11 @@ var app = express();
 // view engine setup
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
-app.set('port', process.env.PORT || 3000);
+app.set('port', process.env.PORT || 8080);
 app.use(logger('dev'));
 
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(bodyParser());
+app.use(bodyParser({uploadDir: './uploads'}));
 
 
 routes(app);
