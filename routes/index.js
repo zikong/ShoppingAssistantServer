@@ -46,10 +46,18 @@ module.exports = function(app) {
 
     //
     app.post('/avatar', function(req, res) {
+        console.log(req.file);
+        if(!(req.query.username)) {
+            return res.json({
+                code: 0,
+                msg: '参数信息不完整'
+            });
+        }
         // 获得文件的临时路径
-        var tmp_path = req.files.avatar.path;
-        // 指定文件上传后的目录 - 示例为"images"目录。
-        var target_path = './public/images/' + req.files.avatar.name;
+        var tmp_path = req.files.file.path;
+        console.log(tmp_path);
+        // 指定文件上传后的目录 - 示例为"avatars"目录。
+        var target_path = '../avatars/' + req.files.file.name;
         // 移动文件
         fs.rename(tmp_path, target_path, function(err) {
             if (err) {
@@ -62,7 +70,6 @@ module.exports = function(app) {
             fs.unlink(tmp_path, function(err) {
                 if (err) throw err;
             });
-
 
         });
     });
