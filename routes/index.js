@@ -46,7 +46,7 @@ module.exports = function(app) {
 
     //
     app.post('/avatar', function(req, res) {
-        console.log(req.file);
+        console.log(req.files);
         if(!(req.query.username)) {
             return res.json({
                 code: 0,
