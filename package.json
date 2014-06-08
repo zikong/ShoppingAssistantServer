@@ -7,6 +7,8 @@
         "morgan": "*",
         "debug": "*",
         "body-parser": "*",
-        "ejs": "*"
+        "ejs": "*",
+        "method-override": "*",
+        "multer": "*"
     }
 }

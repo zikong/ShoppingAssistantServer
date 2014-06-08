@@ -75,3 +75,19 @@ User.prototype.getOne = function(username, callback) {
       })
 };
 
+User.prototype.update = function(username, callback) {
+    mongodb.open(function(err, db) {
+        if (err) {
+            return callback(err);
+        }
+
+        db.collection('users', function(err, collection) {
+            if (err) {
+                mongodb.close();
+                return callback(err);
+            }
+
+        })
+    });
+};
+

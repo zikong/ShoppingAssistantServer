@@ -7,6 +7,8 @@ var logger = require('morgan');
 var http = require('http');
 var bodyParser = require('body-parser');
 var routes = require('./routes/index');
+var methodOverride = require('method-override');
+var multer     = require('multer');
 
 var app = express();
 
@@ -15,9 +17,10 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 app.set('port', process.env.PORT || 1337);
 app.use(logger('dev'));
-//app.use(express.methodOverride());
+app.use(methodOverride());
+app.use(multer({ dest: './uploads/'}));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(bodyParser({uploadDir: './uploads', limit: '50mb', keepExtensions: true}));
+app.use(bodyParser(/*{uploadDir: './uploads', limit: '50mb', keepExtensions: true}*/));
 
 
 routes(app);
