@@ -8,6 +8,8 @@ var router = express.Router();
 var User = require('../models/user.js');
 var fs = require('fs');
 var mongodb = require('../models/db.js');
+var Category = require('../models/category.js');
+var Item = require('../models/item.js');
 /* GET home page. */
 module.exports = function(app) {
 
@@ -191,16 +193,16 @@ module.exports = function(app) {
     //GET userinfo?username=xxx
     app.get('/userinfo', function(request, response) {
         if (!request.query.username) {
-            return res.json({
+            return response.json({
                 code: 0,
                 msg: '参数信息不完整'
             });
         }
         new User().getOne(request.query.username, function(error, user) {
             if (error) {
-                return res.json({
+                return response.json({
                     code: 0,
-                    msg: '参数信息不完整'
+                    msg: error.toString()
                 });
             }
             response.json({
@@ -212,5 +214,58 @@ module.exports = function(app) {
             });
         });
     });
+
+    //返回商店所有商品的类目信息
+    //GET
+    app.get('/category', function(request, response) {
+        new Category().get(function(error, categorys) {
+            console.log("========= GET itemCategory :", categorys);
+            if (error) {
+                return response.json({
+                    code: 0,
+                    msg: error.toString()
+                });
+            }
+            response.json({
+                categorys: categorys
+            });
+        });
+    });
+
+    //根据categoryId返回商品信息
+    //GET itemWithCategory?categoryId=xxx
+    app.get('/itemWithCategory', function(request, response) {
+        if (!request.query.categoryId) {
+            response.json({
+                code: 0,
+                msg: '参数信息不完整'
+            });
+        }
+        new Item().getWithCategory(request.query.categoryId, function(error, item) {
+            console.log(item);
+            if (error) {
+                return response.json({
+                    code: 0,
+                    msg: error.toString()
+                });
+            }
+            response.json(item);
+        });
+    });
+
+    //返回商品图片
+    //GET itemImage?itemId=xxx
+    app.get('/itemImage', function(request, response) {
+        if (!request.query.itemId) {
+            return response.json({
+                code: 0,
+                msg: '参数信息不完整'
+            });
+        }
+        var filename = request.query.itemId + '.png';
+        var avatarPath = './itemimage/' + filename;
+        response.sendfile(avatarPath);
+    });
+
 
 };
