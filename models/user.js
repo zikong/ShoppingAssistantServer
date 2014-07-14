@@ -2,6 +2,7 @@
  * Created by zikong on 14-5-24.
  */
 var mongodb = require('./db');
+var ObjectID = require('mongodb').ObjectID;
 
 function User(pUsername, pPassword, pEmail) {
     this.username = pUsername;
@@ -9,7 +10,7 @@ function User(pUsername, pPassword, pEmail) {
     this.email = pEmail;
     this.likeList = new Array();
     this.avatar = undefined;
-    this.balance = 0.0;
+    this.balance = 10000.0;
 }
 
 module.exports = User;
@@ -91,3 +92,70 @@ User.prototype.update = function(username, callback) {
     });
 };
 
+//给用户添加收藏
+User.prototype.star = function(username, itemId,callback) {
+    mongodb.open(function(error, db) {
+        if (error) {
+            return callback(error);
+        }
+
+        db.collection('users', function(error, collection) {
+            if(error) {
+                mongodb.close();
+                return callback(error);
+            }
+
+            collection.findOne({
+                username: username
+            }, function(error, user) {
+                if (error) {
+                    mongodb.close();
+                    return callback(error);
+                }
+                user.likeList.push(new ObjectID(itemId));
+                console.log(user);
+                collection.update({username : username}, {$set:{likeList:user.likeList}}, function(error) {
+                    mongodb.close();
+                    if (error) {
+                        return callback(error);
+                    }
+                    return callback(null);
+                });
+            });
+        });
+    });
+};
+
+
+User.prototype.payMoney = function(username, price, callback) {
+    mongodb.open(function(error, db) {
+        if (error) {
+            return callback(error);
+        }
+
+        db.collection('users', function(error, collection) {
+            if(error) {
+                mongodb.close();
+                return callback(error);
+            }
+
+            collection.findOne({
+                username: username
+            }, function(error, user) {
+                if (error) {
+                    mongodb.close();
+                    return callback(error);
+                }
+                var balance = user.balance - price;
+                console.log(user);
+                collection.update({username : username}, {$set:{balance:balance}}, function(error) {
+                    mongodb.close();
+                    if (error) {
+                        return callback(error);
+                    }
+                    return callback(null);
+                });
+            });
+        });
+    });
+};

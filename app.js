@@ -20,7 +20,7 @@ app.use(logger('dev'));
 app.use(methodOverride());
 app.use(multer({ dest: './uploads/'}));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(bodyParser(/*{uploadDir: './uploads', limit: '50mb', keepExtensions: true}*/));
+app.use(bodyParser());
 
 
 routes(app);

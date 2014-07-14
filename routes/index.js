@@ -241,15 +241,17 @@ module.exports = function(app) {
                 msg: '参数信息不完整'
             });
         }
-        new Item().getWithCategory(request.query.categoryId, function(error, item) {
-            console.log(item);
+        new Item().getWithCategory(request.query.categoryId, function(error, items) {
+            console.log(items);
             if (error) {
                 return response.json({
                     code: 0,
                     msg: error.toString()
                 });
             }
-            response.json(item);
+            response.json({
+                item: items
+            });
         });
     });
 
@@ -267,5 +269,116 @@ module.exports = function(app) {
         response.sendfile(avatarPath);
     });
 
+    //收藏商品
+    //GET star?username=xxx&itemId=xxx
+    app.get('/star', function(request, response) {
+        if (!(request.query.itemId && request.query.username)) {
+            return response.json({
+                code: 0,
+                msg: '参数信息不完整'
+            });
+        }
+        new User().star(request.query.username, request.query.itemId, function(error) {
+            if (error) {
+                return response.json({
+                    code: 0,
+                    msg: error.toString()
+                });
+            }
+            return response.json({
+                code: 1,
+                msg: '收藏成功'
+            });
+        });
+    });
+
+    //添加商品
+    //GET addItem?name=xxx&shortInfo=xxx&price=xxx&info=xxx&category=xxx&image=xxx
+    app.get('/addItem', function(request, response) {
+        if (!(request.query.name && request.query.shortInfo && request.query.price && request.query.info && request.query.category && request.query.image)) {
+            return response.json({
+                code: 0,
+                msg: '参数信息不完整'
+            });
+        }
+
+        var newItem = new Item(request.query.name, request.query.shortInfo, request.query.price, request.query.info, request.query.category, request.query.image);
+        newItem.add(function(error, item) {
+            if(error) {
+                return response.json({
+                    code: 0,
+                    msg: error.toString()
+                });
+            }
+            console.log(item);
+            return response.json({
+                code: 1,
+                msg: '添加成功'
+            });
+
+        });
+    });
+
+    //添加商品
+    //GET item?itemId=xxx
+    app.get('/item', function(request, response) {
+        if (!request.query.itemId) {
+            return response.json({
+                code: 0,
+                msg: '参数信息不完整'
+            });
+        }
+
+        new Item().getOne(request.query.itemId, function(error, item) {
+            if(error) {
+                return response.json({
+                    code: 0,
+                    msg: error.toString()
+                });
+            }
+            console.log(item);
+            return response.json(item);
+
+        });
+    });
+
+    app.get('/pay', function(request, response) {
+        new Item().getWithCategory("5394b8c4f7f12c598a91ecb3", function(error, items){
+            if(error) {
+                return response.json({
+                    code: 0,
+                    msg: error.toString()
+                });
+            }
+            console.log(items);
+            return response.json({
+                item: items
+            });
+        });
+    });
+
+    //GET payMoney?username=xxx&price=xxx
+    app.get('/payMoney',function(request, response) {
+        if (!(request.query.price && request.query.username)) {
+            return response.json({
+                code: 0,
+                msg: '参数信息不完整'
+            });
+        }
+        var price = parseFloat(request.query.price);
+        new User().payMoney(request.query.username, price, function(error) {
+            if(error) {
+                return response.json({
+                    code: 0,
+                    msg: error.toString()
+                });
+            }
+            return response.json({
+                code: 1,
+                msg: '支付成功'
+            });
+        });
+
+    });
 
 };
